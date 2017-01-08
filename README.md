@@ -1,6 +1,6 @@
 ##前言：
-&emsp;&emsp;最近使用node.js开发了一个简单的企业网站。实现了部分功能，node.js中许多现有的模块使用起来确实便捷，再配合前台json交互，网站就很快就开发完成，但是要成为合格的商用产品，应该还有很多地方需要完善。
-工具：
+&emsp;&emsp;最近使用node.js开发了一个简单的企业网站。发现node.js中许多现有的模块使用起来确实便捷，再配合前台json交互，网站就很快就开发完成。  
+相关工具：
 - node 4.4.5
 - mongodb3.2.6(64bit)
 - Robomongo0.9.0-RC8
@@ -68,7 +68,7 @@
 ```
 //index.html页面中给轮播img标签设置最小高度200px
 <div class="item active">  
-      <img src="http://localhost:3000/web/images/index3.jpg" class="img-responsive"  style="min-height: 200px">
+      ![](http://localhost:3000/web/images/index3.jpg)
 </div>
 ```
 -  4.3、同样也是图片问题，使用UEditor上传图片内容后，如果图片过大，在手机端网页会图片撑开，不太友好。
@@ -98,7 +98,7 @@
 
 ```
 //网页中使用图片验证码的地方，有个style设置图片可以点击，同时onclick实现图片验证码点击刷新。
-<img src="http://localhost:3000/captcha"  style="cursor:pointer" onclick="this.src='http://localhost:3000/captcha?d='+Math.random();">
+![](http://localhost:3000/captcha)
 ```
 
 -  5.3、当网站有用户提交反馈信息时，工作人员希望在后台可及时收到消息提示信息。想着简单的方法，通过js定时查询数据库，发现有数据更新及时弹窗提醒工作人员。效果如下：
@@ -170,7 +170,7 @@ var time=Moment().format('YYYY-MM-DD HH:mm');
 ##七、：最后
 项目部署用的是阿里云的windows系统，懒得部署的话直接用在服务器上webstrom启动就是了。
 也可参考我的另外一个博文： [nssm部署node.js项目](https://my.oschina.net/u/2480757/blog/713694)  
-所有资料都来自互联网，有冒犯之处请告知。
 素材来源： [一个神奇的高清图片库](https://unsplash.com/)
  [完整源代码](https://github.com/dpc761218914/company_website)  
 
+所有资料都来自互联网，有冒犯之处请告知。

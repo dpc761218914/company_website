@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="plugins/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="css/global.css" media="all">
+		<link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/table.css" />
+	</head>
+
+	<body>
+	<div class="admin-main">
+
+		<blockquote class="layui-elem-quote">
+			<a href="javascript:;" class="layui-btn layui-btn-small" id="refresh">
+				刷新数据
+			</a>
+
+		</blockquote>
+		<fieldset class="layui-elem-field">
+			<legend>数据列表</legend>
+			<div class="layui-field-box">
+				<table class="site-table table-hover">
+					<thead>
+					<tr>
+						<th>序号</th>
+						<th>标题</th>
+						<th>来源</th>
+						<th>日期</th>
+						<th>查看内容</th>
+						<th>类别</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody id="tabContent">
+
+					</tbody>
+				</table>
+
+			</div>
+		</fieldset>
+		<div class="admin-table-page">
+			<div id="page" class="page">
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="plugins/layui/layui.js"></script>
+	<script>
+		layui.config({
+			base: 'plugins/layui/modules/'
+		});
+
+		layui.use(['icheck', 'laypage','layer'], function() {
+			var $ = layui.jquery,
+					laypage = layui.laypage,
+					layer = parent.layer === undefined ? layui.layer : parent.layer;
+
+
+			//页面初始化的时候执行
+			$(function (){
+				getData(1);
+			});
+
+			//点击刷新按钮
+			$('#refresh').on('click', function() {
+				getData(1);
+				layer.msg('刷新成功');
+			});
+
+			//查看新闻详情
+			$('#tabContent').on('click', '.layui-btn-normal', function() {
+				var obj = $(this);
+				var id = obj.parents('tr').attr('id');
+				$.post("/admin/news_content",{id:id},function(result){
+					if(result.status==="success"){
+						var content=result.data;
+						//驾驶证信息弹窗
+						layer.open({
+							type: 1 //Page层类型
+							,area: ['1000px', '800px']
+							,title: '详情'
+							,shade: 0.6 //遮罩透明度
+							,maxmin: true //允许全屏最小化
+							,anim: 1 //0-6的动画形式，-1不开启
+							,content: content
+						});
+					}else{
+						layer.msg('获取信息失败!', {
+							icon: 1,
+							time: 1000
+						});
+					}
+				});
+			});
+			/*删除分类*/
+			$('#tabContent').on('click', '.layui-btn-danger', function() {
+				var obj = $(this);
+				var id = obj.parents('tr').attr('id');
+
+				layer.confirm('确认要删除吗？', {
+					icon: 0,
+					title: '警告',
+					shade: false
+				}, function(index) {
+
+					$.post("/admin/news_del",{id:id},function(result){
+						if(result.status==="success"){
+							$(obj).parents("tr").remove(); //删除方法
+							layer.msg('已删除!', {
+								icon: 1,
+								time: 1000
+							});
+							getData(1);
+						}else{
+							layer.msg('删除失败!', {
+								icon: 1,
+								time: 1000
+							});
+						}
+					});
+				});
+			});
+
+
+			//从后台获取数据函数，获取页数curr的数据
+			function getData(curr){
+				$.post("/admin/get_news",{curr:curr},function(result){
+					//拼接html内容
+					var tabContent="";
+					//获取后台json数据
+					var mydata=result.data;
+
+
+					for(var i=0;i<mydata.length;i++){
+						if(mydata[i].category==='0'){
+							category='<span class="layui-btn layui-btn-primary layui-btn-mini">公司动态</span>';
+						}else{
+							category='<span class="layui-btn layui-btn-primary layui-btn-mini">媒体报道</span>';
+						}
+
+						var tempStr='<tr id='+mydata[i]._id+'>'+
+									/*序号分页后也必须得变动,每页十条数据*/
+								'<td>'+(i+(curr-1)*10+1)+'</td>'+
+								'<td>'+mydata[i].title+'</td>'+
+								'<td>'+mydata[i].from+'</td>'+
+								'<td>'+mydata[i].time+'</td>'+
+								'<td>'+
+								'<span class="layui-btn layui-btn-normal layui-btn-mini">查看内容</span>'+
+								'</td>'+
+								'<td>'+
+								category+
+								'</td>'+
+								'<td>'+
+								'<span class="layui-btn layui-btn-danger layui-btn-mini">删除</span>'+
+								'</td>'+
+								'</tr>'
+						tabContent=tabContent+tempStr;
+					}
+					//将拼接好的数据填入#tabContent中
+					$("#tabContent").html(tabContent);
+					//显示分页
+					laypage({
+						cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+						pages: result.pages, //通过后台拿到的总页数
+						curr: curr || 1, //当前页
+						jump: function(obj, first){ //触发分页后的回调
+							if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+								getData(obj.curr);
+							}
+						}
+					});
+
+				});
+			};
+
+		});
+	</script>
+	</body>
+
+</html>

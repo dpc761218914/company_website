@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="http://localhost:3000/admin/plugins/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="http://localhost:3000/admin/css/main.css" />
+	<!--多文本编辑器-->
+	<script type="text/javascript" charset="utf-8" src="http://localhost:3000/ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="http://localhost:3000/ueditor/ueditor.all.min.js"> </script>
+	<!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+	<!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+	<script type="text/javascript" charset="utf-8" src="http://localhost:3000/ueditor/lang/zh-cn/zh-cn.js"></script>
+	<!--多文本编辑器-->
+</head>
+
+<body>
+<div style="margin: 15px;">
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+		<legend>添加新招聘</legend>
+	</fieldset>
+
+	<form class="layui-form" action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">职位</label>
+			<div class="layui-input-block">
+				<input type="text" id="position" name="position"  autocomplete="off" placeholder="请输入招聘职位" class="layui-input">
+			</div>
+		</div>
+
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">添加日期</label>
+			<div class="layui-input-block">
+				<input type="text" id="time" name="time" id="date"  placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
+			</div>
+		</div>
+
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">类别</label>
+			<div class="layui-input-block">
+				<input type="radio" name="category" value="0" title="全职" checked="">
+				<input type="radio" name="category" value="1" title="兼职">
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">部门</label>
+			<div class="layui-input-block">
+				<input type="text" id="department" name="department"  autocomplete="off" placeholder="请输入部门" class="layui-input">
+			</div>
+		</div>
+
+
+
+
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">编辑内容</label>
+			<div class="layui-input-block">
+				<script id="editor" type="text/plain" style="width:1024px;height:800px;"></script>
+				<!--<textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="LAY_demo_editor"></textarea>-->
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit="" id="add">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+<script type="text/javascript" src="http://localhost:3000/admin/plugins/layui/layui.js"></script>
+<script>
+	layui.use(['form', 'laydate','upload'], function() {
+		var form = layui.form(),
+				layer = layui.layer,
+				laydate = layui.laydate,
+				$= layui.jquery;
+
+		var ue = UE.getEditor('editor');
+
+		//监听提交
+		//点击添加分类
+		$('#add').on('click', function() {
+			var position=$("#position").val();
+			var time=$("#time").val();
+			var department=$("#department").val();
+			//获取选中的radio的内容
+			var category=$('input:radio:checked').val();
+			//获取多文本编辑内容
+			var requirement=UE.getEditor('editor').getContent();
+			//测试用户是否录入信息
+			if(position==""||time==""||department==""){
+				layer.alert('请填入相关信息', {icon: 2});
+				return;
+			}
+			/*alert("title"+title+"time"+time+"from"+from+"from"+imgurl+"content"+content);*/
+			$.post("http://localhost:3000/admin/add_recruit",{position:position,time:time,department:department,category:category,requirement:requirement},function(result){
+				if(result.status==="success"){
+					layer.alert('添加成功,请在招聘列表查看。', {icon: 1});
+				}else{
+					layer.alert('添加失败', {icon: 2});
+				}
+			});
+			//这句话的意思不会刷新当前页面。避免清空内容
+			return false;
+		});
+	});
+</script>
+</body>
+
+</html>

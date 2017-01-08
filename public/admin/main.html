@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="plugins/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="css/global.css" media="all">
+	<link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/table.css" />
+</head>
+
+<body>
+<div class="admin-main">
+
+	<blockquote class="layui-elem-quote">
+		<a href="javascript:;" class="layui-btn layui-btn-small" id="refresh">
+			刷新数据
+		</a>
+
+	</blockquote>
+	<fieldset class="layui-elem-field">
+		<legend>用户反馈信息列表</legend>
+		<div class="layui-field-box">
+			<table class="site-table table-hover">
+				<thead>
+				<tr>
+					<th>序号</th>
+					<th>姓名</th>
+					<th>邮箱</th>
+					<th>电话</th>
+					<th>内容</th>
+					<th>时间</th>
+					<th>操作</th>
+				</tr>
+				</thead>
+				<tbody id="tabContent">
+
+				</tbody>
+			</table>
+
+		</div>
+	</fieldset>
+	<div class="admin-table-page">
+		<div id="page" class="page">
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="plugins/layui/layui.js"></script>
+<script>
+	layui.config({
+		base: 'plugins/layui/modules/'
+	});
+
+	layui.use(['icheck', 'laypage','layer'], function() {
+		var $ = layui.jquery,
+				laypage = layui.laypage,
+				layer = parent.layer === undefined ? layui.layer : parent.layer;
+
+
+		//页面初始化的时候执行
+		$(function (){
+			//设置5秒钟轮询一次，查询数据库
+			setInterval(getFeedbacks,5000);
+			getData(1);
+			//5s执行一次，查询操作
+
+		});
+
+		//点击刷新按钮
+		$('#refresh').on('click', function() {
+			getData(1);
+			layer.msg('刷新成功');
+		});
+
+		/*删除分类*/
+		$('#tabContent').on('click', '.layui-btn-danger', function() {
+			var obj = $(this);
+			var id = obj.parents('tr').attr('id');
+
+			layer.confirm('确认已经处理了？', {
+				icon: 0,
+				title: '警告',
+				shade: false
+			}, function(index) {
+
+				$.post("/admin/deal_feedbacks",{id:id},function(result){
+					if(result.status==="success"){
+						layer.msg('处理完成!', {
+							icon: 1,
+							time: 1000
+						});
+						getData(1);
+					}else{
+						layer.msg('系统错误!', {
+							icon: 1,
+							time: 1000
+						});
+					}
+				});
+			});
+		});
+
+		//从后台查询数据库，看是否有订单
+		function getFeedbacks(){
+			$.get("/admin/check_feedbacks",function(result){
+				if(result.status==='success'){
+
+					layer.open({
+						type: '1'
+						,offset: 'rb' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+						,id: 'LAY_demo'+'rb' //防止重复弹出
+						,content: '<div style="padding: 20px 100px;">你有'+result.size+'条待处理反馈信息,请在反馈信息列表查看！</div>'
+						,btn: '我知道了'
+						,btnAlign: 'c' //按钮居中
+						,shade: 0 //不显示遮罩
+						,time: 10000 //10秒后自动关闭
+						,anim: 2 //设置弹出的动画样式
+						,yes: function(){
+							layer.closeAll();
+						}
+					});
+
+				}
+			});
+		};
+
+
+
+		//从后台获取数据函数，获取页数curr的数据
+		function getData(curr){
+			$.post("/admin/get_feedbacks",{curr:curr},function(result){
+				//拼接html内容
+				var tabContent="";
+				//获取后台json数据
+				var mydata=result.data;
+
+				for(var i=0;i<mydata.length;i++){
+					dealStr='已完成'
+					if(mydata[i].status==='0'){
+						dealStr='<span class="layui-btn layui-btn-danger layui-btn-mini">去处理</span>'
+					}
+
+					var tempStr='<tr id='+mydata[i]._id+'>'+
+								/*序号分页后也必须得变动,每页十条数据*/
+							'<td>'+(i+(curr-1)*10+1)+'</td>'+
+							'<td>'+mydata[i].name+'</td>'+
+							'<td>'+mydata[i].email+'</td>'+
+							'<td>'+mydata[i].phone+'</td>'+
+							'<td>'+mydata[i].message+'</td>'+
+							'<td>'+mydata[i].time+'</td>'+
+							'<td>'+
+							 dealStr+
+							'</td>'+
+							'</tr>'
+					tabContent=tabContent+tempStr;
+				}
+				//将拼接好的数据填入#tabContent中
+				$("#tabContent").html(tabContent);
+				//显示分页
+				laypage({
+					cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+					pages: result.pages, //通过后台拿到的总页数
+					curr: curr || 1, //当前页
+					jump: function(obj, first){ //触发分页后的回调
+						if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+							getData(obj.curr);
+						}
+					}
+				});
+
+			});
+		};
+
+	});
+</script>
+</body>
+
+</html>

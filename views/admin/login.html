@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>登录</title>
+		<link rel="stylesheet" href="/admin/plugins/layui/css/layui.css" media="all" />
+		<style type="text/css">
+			body{background: url(admin/images/rebc.gif);}
+		</style>
+
+
+	</head>
+
+	<body>
+	<div style="margin-top: 200px">
+		<div style="text-align: center;">
+			<a href="#"><img src="admin/images/admin_logo.png" /></a>
+		</div>
+		<br>
+
+		<div style="margin-left: 30%;margin-right: 30%">
+		    <fieldset class="layui-elem-field">
+			<div class="layui-field-box" style="background-color: white;">
+				<div class="head">
+					<img src="admin/images/15.png" style="width: 30px;height: 30px;">
+					<span>用户登录</span>
+				</div>
+				<br>
+
+				<form class="layui-form" id="" name="loginForm" style="text-align: center">
+					<div class="layui-form-item">
+						<label class="layui-form-label">用户名</label>
+						<div class="layui-input-block">
+							<input type="text" name="username" id="username" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">密码</label>
+						<div class="layui-input-block">
+							<input type="text" name="password" id="password" lay-verify="title" autocomplete="off" placeholder="请输入密码" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">验证码</label>
+						<div class="layui-input-block">
+							<!--图片验证码，点击图片实现刷新-->
+							<img src="http://localhost:3000/captcha"  style="float: right;width: 40%;height: 38px;cursor:pointer" onclick="this.src='http://localhost:3000/captcha?d='+Math.random();">
+							<input type="text" name="captcha" id="captcha" style="width: 60%" autocomplete="off" placeholder="请输入验证码" class="layui-input">
+						</div>
+
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label"></label>
+						<div class="layui-input-block">
+							<button class="layui-btn layui-btn-normal" style="width: 100%" id="login" type="submit">登 陆</button>
+						</div>
+					</div>
+
+
+				</form>
+
+				<div style="text-align: right">
+					<a href="/register" style="margin-left: 40px">去注册</a>
+				</div>
+			</div>
+		</fieldset>
+
+		</div>
+
+	</div>
+
+
+	<script type="text/javascript" src="/admin/plugins/layui/layui.js"></script>
+		<script>
+			layui.use(['layer', 'form'], function() {
+				var layer = layui.layer,
+					$ = layui.jquery,
+					form = layui.form();
+
+				//页面初始化的时候执行
+				$(function (){
+
+				});
+
+				//点击添加分类
+				$('#login').on('click', function() {
+					var username=$("#username").val();
+					var password=$("#password").val();
+					var captcha=$("#captcha").val();
+
+					//测试用户是否录入信息
+					if(username==""||password==""){
+						layer.alert('请填入相关信息', {icon: 2});
+						return false;
+					}
+					$.post("http://localhost:3000/login",{username:username,password:password,captcha:captcha},function(result){
+						if(result.status==="captcha error"){
+							layer.alert('验证码错误', {icon: 2});
+						}else if(result.status==="error"){
+							layer.alert('系统错误', {icon: 2});
+						}else if(result.status==="not exist"){
+							layer.alert('用户不存在', {icon: 2});
+						}else if(result.status==="password error"){
+							layer.alert('密码错误', {icon: 2});
+						}else if(result.status==="unchecked"){
+							layer.alert('还未被授权，可提醒高级管理员授权。', {icon: 2});
+						}else{
+							layer.msg('登陆成功');
+							//jquery实现页面跳转
+							location.href ="http://localhost:3000/admin/"
+						}
+
+					});
+					//这句话的意思不会刷新当前页面。避免清空内容
+					return false;
+				});
+
+			});
+		</script>
+	</body>
+
+</html>

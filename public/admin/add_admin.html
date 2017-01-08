@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="http://localhost:3000/admin/plugins/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="http://localhost:3000/admin/css/main.css" />
+
+</head>
+
+<body>
+<div style="margin: 15px;">
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+		<legend>添加管理员</legend>
+	</fieldset>
+
+	<form class="layui-form" action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">用户名</label>
+			<div class="layui-input-block">
+				<input type="text" id="username" name="username"  autocomplete="off" placeholder="请输入用户名" class="layui-input">
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">密码</label>
+			<div class="layui-input-block">
+				<input type="text" id="password" name="password"  autocomplete="off" placeholder="请输入密码" class="layui-input">
+			</div>
+		</div>
+
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">真实姓名</label>
+			<div class="layui-input-block">
+				<input type="text" id="realname" name="realname"  autocomplete="off" placeholder="请输入真实姓名" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">电话号码</label>
+			<div class="layui-input-block">
+				<input type="text" id="phone" name="phone"  autocomplete="off" placeholder="请输入电话号码" class="layui-input">
+			</div>
+		</div>
+
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit="" id="add">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+<script type="text/javascript" src="http://localhost:3000/admin/plugins/layui/layui.js"></script>
+<script>
+	layui.use(['form', 'laydate','upload'], function() {
+		var form = layui.form(),
+				layer = layui.layer,
+				laydate = layui.laydate,
+				$= layui.jquery;
+
+
+		//监听提交
+		//点击添加分类
+		$('#add').on('click', function() {
+			var username=$("#username").val();
+			var password=$("#password").val();
+			var realname=$("#realname").val();
+			var phone=$("#phone").val();
+			//测试用户是否录入信息
+			if(username==""||password==""||realname==""){
+				layer.alert('请填入相关信息', {icon: 2});
+				return;
+			}
+			$.post("http://localhost:3000/admin/post_user",{username:username,password:password,realname:realname,phone:phone},function(result){
+				if(result.status==="success"){
+					layer.alert('添加成功,请在离职管理员列表查看。', {icon: 1});
+				}else if(result.status==="noRight"){
+					layer.alert('非超级管理员，无权添加！', {icon: 2});
+				}
+				else if(result.status==="user_exist"){
+					layer.alert('用户已存在，请勿重复添加！', {icon: 2});
+				}
+				else{
+					layer.alert('添加失败！', {icon: 2});
+				}
+			});
+			//这句话的意思不会刷新当前页面。避免清空内容
+			return false;
+		});
+	});
+</script>
+</body>
+
+</html>

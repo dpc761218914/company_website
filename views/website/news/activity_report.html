@@ -1,0 +1,110 @@
+<%include ../common/include_header.html%>
+
+<%include include_head_img.html%>
+
+
+    <section id="feature" >
+        <div class="container">
+            <div class="row">
+                <div class="features">
+
+
+                    <div class="col-md-3 col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="100ms">
+
+
+
+                        <table class="table table-hover table-bordered" style="margin-right: 50px;margin-left: 10px;text-align:center">
+                            <%include include_menu.html%>
+                        </table>
+
+
+                    </div><!--/.col-md-4-->
+
+                    <div class="col-md-9 col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="100ms">
+
+                        <div class="left wow fadeInDown">
+                            <span style="font-size: large;">活动报道</span>
+                        </div>
+
+
+                        <h3 class="ab_right_title font_size_12" >
+                        <span >您的位置：<a href="http://localhost:3000" class="a_little_tip">首页</a> > <a href="http://localhost:3000/activity_report"class="a_little_tip">活动报道</a>
+                        </span>
+                        </h3>
+
+
+                        <table class="table table-hover"  id="tabContent">
+
+                        </table>
+
+                        <div class="admin-table-page">
+                            <div id="page" class="page">
+                            </div>
+                        </div>
+
+
+
+                    </div><!--/.col-md-4-->
+                </div><!--/.services-->
+            </div><!--/.row-->
+        </div><!--/.container-->
+    </section><!--/#feature-->
+
+
+
+<%include ../common/include_footer.html%>
+<!--jquery修改首页导航样式-->
+<script type="text/javascript" src="web/layui/layui.js"></script>
+<!--jquery修改首页导航样式-->
+<script>
+    //一般直接写在一个js文件中
+    layui.use(['layer', 'laypage','form'], function(){
+        var layer = layui.layer
+                ,laypage = layui.laypage
+                , $ = layui.jquery;
+
+        //页面初始化的时候执行
+        $(function (){
+            $("#news").addClass("active");
+            //第一个参数：多少也，第二个参数，新闻类型，0公司动态，1媒体报道，2活动报道
+            getData(1,2);
+        });
+
+        //从后台获取数据函数，获取页数curr的数据
+        function getData(curr,category){
+            $.post("/web/get_news_by_Category",{curr:curr,category:category},function(result){
+                //拼接html内容
+                var tabContent="";
+                //获取后台json数据
+                var mydata=result.data;
+
+                for(var i=0;i<mydata.length;i++){
+
+                    var tempStr='<tr id='+mydata[i]._id+'>'+
+                                /*序号分页后也必须得变动,每页十条数据*/
+                            '<td>'+(i+(curr-1)*10+1)+'、 <a href="/activity_report_detail/'+mydata[i]._id+'" style="color: #4e4e4e">'+mydata[i].title+'</a><span class="pull-right">'+mydata[i].time+'</span></td>'+
+                            '</tr>'
+                    tabContent=tabContent+tempStr;
+                }
+                //将拼接好的数据填入#tabContent中
+                $("#tabContent").html(tabContent);
+                //显示分页
+                laypage({
+                    cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+                    pages: result.pages, //通过后台拿到的总页数
+                    curr: curr || 1, //当前页
+                    skin: '#c52d2f',
+                    jump: function(obj, first){ //触发分页后的回调
+                        if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+                            getData(obj.curr,0);
+                        }
+                    }
+                });
+            });
+        };
+
+
+    });
+
+
+</script>

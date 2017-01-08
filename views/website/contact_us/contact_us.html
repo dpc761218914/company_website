@@ -1,0 +1,103 @@
+<%include ../common/include_header.html%>
+
+    <section id="contact-info">
+        <div class="center">
+            <h2>怎么找到我们?</h2>
+            <p class="lead">百度地图搜索湖坊工业园...</p>
+        </div>
+        <div class="gmap-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-5 text-center">
+                        <div class="gmap">
+                            <iframe frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="web/images/address2.png"></iframe>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-7 map-content">
+                        <ul class="row">
+                            <li class="col-sm-6">
+                                <address>
+                                    <br>
+                                    <h5>集团地址:江西省南昌市高新开发区南大科技园2号楼7F</h5><br>
+                                    <p>江西车协服务电话: 96911</p><br>
+                                    <p>联系电话:670-898-2847 </p><br>
+                                    <p>企业邮箱:info@domain.com</p>
+                                </address>
+                            </li>
+                            <li class="col-sm-6">
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>  <!--/gmap_area -->
+
+    <section id="contact-page">
+        <div class="container">
+            <div class="center">        
+                <h2>留言</h2>
+                <p class="lead">输入相关信息，点击提交，客服会尽快和你取得联系...</p>
+            </div> 
+            <div class="row contact-wrap"> 
+
+                <form  class="contact-form"  >
+                    <div class="col-sm-5 col-sm-offset-1">
+                        <div class="form-group">
+                            <label>姓名 *</label>
+                            <input type="text" name="name" id="name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>邮箱 *</label>
+                            <input type="email" name="email" id="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>电话 *</label>
+                            <input type="number" id="phone" class="form-control">
+                        </div>
+
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label>内容 *</label>
+                            <textarea name="message" id="message" required="required" class="form-control" rows="8"></textarea>
+                        </div>                        
+                        <div class="form-group">
+                            <button id="submit" class="btn btn-primary btn-lg" >提交信息</button>
+                        </div>
+                    </div>
+                </form> 
+            </div><!--/.row-->
+        </div><!--/.container-->
+    </section><!--/#contact-page-->
+
+<%include ../common/include_footer.html%>
+
+<!--jquery修改首页导航样式-->
+<script>
+    $(function (){
+        $("#contact_us").addClass("active");
+    });
+
+    /*提交反馈信息*/
+    $('#submit').on('click', function() {
+        var name=$("#name").val();
+        var email=$("#email").val();
+        var phone=$("#phone").val();
+        var message=$("#message").val();
+        if(name==""||email==""||phone==""||message==""){
+            alert('信息录入不完整');
+            return;
+        }
+        $.post("/post_feedback", {name: name,email: email,phone: phone,message: message,}, function (result) {
+            if (result.status === "success") {
+                alert("信息提交成功,客服将会尽快和你联系");
+            } else {
+                alert("信息提交成功");
+            }
+        });
+    });
+
+</script>

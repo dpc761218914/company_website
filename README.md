@@ -1,5 +1,8 @@
 ##前言：
-&emsp;&emsp;最近使用node.js开发了一个简单的企业网站。发现node.js中许多现有的模块使用起来确实便捷，再配合前台json交互，网站就很快就开发完成。  
+
+博客地址：http://www.jianshu.com/p/b08d6266cbd6
+
+&emsp;&emsp;最近使用node.js开发了一个简单的企业网站。发现node.js中许多现有的模块使用起来确实便捷，再配合前台json交互，网站就很快就开发完成。  
 相关工具：
 - node 4.4.5
 - mongodb3.2.6(64bit)

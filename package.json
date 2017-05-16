@@ -13,6 +13,7 @@
     "express": "~4.13.1",
     "express-session": "^1.14.2",
     "moment": "^2.17.1",
+    "mongoose": "^4.9.9",
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0",
     "svg-captcha": "^1.2.1",

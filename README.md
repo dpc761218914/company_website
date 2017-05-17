@@ -10,6 +10,8 @@
 - webstrom11.0.1  
 
 相关环境安装以后，导入工程，npm install，修改配置node.exe路径。应该就能运行成功，欢迎issue。
+关于数据库后台登录时，用户可以先注册一个帐号，然后在数据库修改用户的标志位。就可以登录成功了，标志位分别是0，1，2
+
 ———————————————————————————————————————
 先上效果图吧（没有美工，资源就网上搜了）
 **1、网站效果图：**
@@ -27,7 +29,6 @@
 ![新闻列表.png](http://upload-images.jianshu.io/upload_images/2227968-9a34bbd9523bf7de.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ![管理员列表.png](http://upload-images.jianshu.io/upload_images/2227968-61eef83a099f30e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
 
 
 

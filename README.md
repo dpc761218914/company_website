@@ -14,16 +14,21 @@
 
 —————————————
 先上效果图吧（没有美工，资源就网上搜了）  
+
+
 **1、网站效果图：**
 ![网站首页.png](http://upload-images.jianshu.io/upload_images/2227968-c210e2991d4f5a56.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ![前台新闻列表.png](http://upload-images.jianshu.io/upload_images/2227968-a40e971dc06fafe0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-**2、移动端显示：**
+**2、移动端显示：**   
+
+
 ![移动端1.png](http://upload-images.jianshu.io/upload_images/2227968-9fdf30b84461969a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 ![移动端2.png](http://upload-images.jianshu.io/upload_images/2227968-37031613e1ce2bd4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-**3、后台管理系统：**
+**3、后台管理系统：**  
+
 ![登陆界面.png](http://upload-images.jianshu.io/upload_images/2227968-f8bd6bbe28606a06.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ![新闻列表.png](http://upload-images.jianshu.io/upload_images/2227968-9a34bbd9523bf7de.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
